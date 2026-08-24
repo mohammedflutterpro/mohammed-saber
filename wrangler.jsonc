@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "mohammed-saber-it",
   "main": "./dist/server/index.js",
-  "compatibility_date": "2026-08-24",
+  "compatibility_date": "2026-08-23",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist/client", "binding": "ASSETS" },
   "d1_databases": [{
