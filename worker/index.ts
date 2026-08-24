@@ -6,6 +6,7 @@ interface Env {
   DB: D1Database;
   ADMIN_PASSWORD: string;
   SESSION_SECRET: string;
+  GITHUB_TOKEN: string;
 }
 
 interface ExecutionContext {
@@ -14,11 +15,7 @@ interface ExecutionContext {
 }
 
 export default {
-  fetch(
-    request: Request,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<Response> {
+  fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     return handler.fetch(request, env, ctx);
   },
 };

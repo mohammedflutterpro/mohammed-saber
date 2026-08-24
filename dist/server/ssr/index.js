@@ -1836,7 +1836,7 @@ function createInlineScriptTag(content, nonce) {
 * LICENSE file in the root directory of this source tree.
 */
 var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
+	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 	function jsxProd(type, config, maybeKey) {
 		var key = null;
 		void 0 !== maybeKey && (key = "" + maybeKey);
@@ -1854,6 +1854,7 @@ var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((expor
 			props: maybeKey
 		};
 	}
+	exports.Fragment = REACT_FRAGMENT_TYPE;
 	exports.jsx = jsxProd;
 	exports.jsxs = jsxProd;
 }));
@@ -11642,7 +11643,7 @@ var client_references_default = {
 		};
 	},
 	"6efdf509a785": async () => {
-		const m = await import("./assets/page-6OPkhSvo.js");
+		const m = await import("./assets/page-BbVmx_2N.js");
 		return {
 			get "default"() {
 				return m["default"];
@@ -11673,7 +11674,7 @@ var client_references_default = {
 		};
 	},
 	"9d13229b058a": async () => {
-		const m = await import("./assets/AdminEditor-DZYJjVUI.js");
+		const m = await import("./assets/AdminEditor-CwuOEJ_5.js");
 		return { get "default"() {
 			return m["default"];
 		} };
