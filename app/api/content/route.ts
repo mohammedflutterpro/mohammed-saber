@@ -15,7 +15,7 @@ export async function GET() {
 export async function PUT(request: Request) {
   if (!(await isAdminSession())) return Response.json({ error: "Sign in required" }, { status: 401 });
   const body = await request.json();
-  if (!body?.content?.en || !body?.content?.ar || !body?.links) return Response.json({ error: "Invalid content" }, { status: 400 });
+  if (!body?.content?.en || !body?.content?.ar || (!Array.isArray(body?.contacts) && !body?.links)) return Response.json({ error: "Invalid content" }, { status: 400 });
   await ensureTable();
   await env.DB.prepare("INSERT INTO portfolio_content (id, content, updated_at) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET content = excluded.content, updated_at = excluded.updated_at")
     .bind(JSON.stringify(body), new Date().toISOString()).run();

@@ -11643,18 +11643,13 @@ var client_references_default = {
 		};
 	},
 	"6efdf509a785": async () => {
-		const m = await import("./assets/page-CGY53xrC.js");
-		return {
-			get "default"() {
-				return m["default"];
-			},
-			get "defaultData"() {
-				return m["defaultData"];
-			}
-		};
+		const m = await import("./assets/page-B7BrtfM7.js");
+		return { get "default"() {
+			return m["default"];
+		} };
 	},
 	"93455aebcfa7": async () => {
-		const m = await import("./assets/error-boundary-DpgffqkS.js");
+		const m = await import("./assets/error-boundary-F4loBwuY.js");
 		return {
 			get "ErrorBoundary"() {
 				return m["ErrorBoundary"];
@@ -11674,13 +11669,13 @@ var client_references_default = {
 		};
 	},
 	"9d13229b058a": async () => {
-		const m = await import("./assets/AdminEditor-gip6n9c6.js");
+		const m = await import("./assets/AdminEditor-Ca3Aw345.js");
 		return { get "default"() {
 			return m["default"];
 		} };
 	},
 	"e79bb777195f": async () => {
-		const m = await import("./assets/layout-segment-context-D6gq7Mxz.js");
+		const m = await import("./assets/layout-segment-context-BvaLoKCP.js");
 		return { get "LayoutSegmentProvider"() {
 			return m["LayoutSegmentProvider"];
 		} };

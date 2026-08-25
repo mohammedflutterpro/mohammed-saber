@@ -2,13 +2,13 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "mohammed-saber-it",
   "main": "./dist/server/index.js",
-  "compatibility_date": "2026-08-23",
+  "compatibility_date": "2026-08-25",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist/client", "binding": "ASSETS" },
   "d1_databases": [{
     "binding": "DB",
     "database_name": "mohammed-saber-portfolio-db",
-    "database_id": "159c54e2-f4a2-44fb-8d02-0902b1eb3125",
+    "database_id": "00000000-0000-4000-8000-000000000000",
     "migrations_dir": "./drizzle"
   }],
   "observability": { "enabled": true }
