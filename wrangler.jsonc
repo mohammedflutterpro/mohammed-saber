@@ -8,7 +8,7 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "mohammed-saber-portfolio-db",
-    "database_id": "00000000-0000-4000-8000-000000000000",
+    "database_id": "159c54e2-f4a2-44fb-8d02-0902b1eb3125",
     "migrations_dir": "./drizzle"
   }],
   "observability": { "enabled": true }
