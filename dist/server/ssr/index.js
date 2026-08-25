@@ -11643,7 +11643,7 @@ var client_references_default = {
 		};
 	},
 	"6efdf509a785": async () => {
-		const m = await import("./assets/page-BbVmx_2N.js");
+		const m = await import("./assets/page-CGY53xrC.js");
 		return {
 			get "default"() {
 				return m["default"];
@@ -11674,7 +11674,7 @@ var client_references_default = {
 		};
 	},
 	"9d13229b058a": async () => {
-		const m = await import("./assets/AdminEditor-CwuOEJ_5.js");
+		const m = await import("./assets/AdminEditor-zsMGThKH.js");
 		return { get "default"() {
 			return m["default"];
 		} };
