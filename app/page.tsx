@@ -16,6 +16,19 @@ export default function Home() {
       setContent(normalized.content);
       setContacts(normalized.contacts);
     }).catch(() => {});
+
+    try {
+      if (!sessionStorage.getItem("portfolio_visit_counted")) {
+        sessionStorage.setItem("portfolio_visit_counted", "1");
+        const source = new URLSearchParams(location.search).get("utm_source") || document.referrer;
+        fetch("/api/analytics/visit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ source }), keepalive: true }).catch(() => {
+          sessionStorage.removeItem("portfolio_visit_counted");
+        });
+      }
+    } catch {
+      const source = new URLSearchParams(location.search).get("utm_source") || document.referrer;
+      fetch("/api/analytics/visit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ source }), keepalive: true }).catch(() => {});
+    }
   }, []);
 
   const t = content[lang];

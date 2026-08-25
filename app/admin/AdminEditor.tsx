@@ -6,6 +6,9 @@ import "./admin.css";
 import "./login.css";
 
 type Tab = "home" | "general" | "profile" | "skills" | "experience" | "project" | "education" | "contact" | "files";
+type VisitItem = { value: string; visits: number };
+type VisitStats = { total: number; today: number; breakdown: Record<"device" | "os" | "browser" | "country" | "source", VisitItem[]> };
+const emptyVisits: VisitStats = { total: 0, today: 0, breakdown: { device: [], os: [], browser: [], country: [], source: [] } };
 
 const names: Record<Lang, Record<Tab, string>> = {
   en: { home: "Dashboard", general: "General", profile: "About", skills: "Skills", experience: "Experience", project: "Projects", education: "Education", contact: "Contact", files: "Photo & CV" },
@@ -25,6 +28,7 @@ export default function AdminEditor() {
   const [dirty, setDirty] = useState(false);
   const [uploading, setUploading] = useState<"photo" | "cv" | null>(null);
   const [photoVersion, setPhotoVersion] = useState(Date.now());
+  const [visits, setVisits] = useState<VisitStats>(emptyVisits);
   const photoInput = useRef<HTMLInputElement>(null);
   const cvInput = useRef<HTMLInputElement>(null);
 
@@ -36,6 +40,19 @@ export default function AdminEditor() {
       setContacts(normalized.contacts);
     }).finally(() => setLoading(false));
   }, []);
+
+  const loadVisits = () => fetch("/api/analytics/visit")
+    .then(response => response.ok ? response.json() : Promise.reject())
+    .then(data => setVisits({
+      total: Number(data.total || 0),
+      today: Number(data.today || 0),
+      breakdown: { ...emptyVisits.breakdown, ...(data.breakdown || {}) },
+    }))
+    .catch(() => {});
+
+  useEffect(() => {
+    if (authed) loadVisits();
+  }, [authed]);
 
   const t = content[lang];
   const isAr = lang === "ar";
@@ -119,7 +136,7 @@ export default function AdminEditor() {
       {message && <div className={`notice ${messageType}`}>{messageType === "busy" && <i/>}{message}</div>}
       {tab !== "files" && tab !== "home" && <div className="editor-toolbar"><div><button className={lang === "ar" ? "active" : ""} onClick={() => setLang("ar")}>العربية</button><button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>English</button></div><span>{tr("تعديل النسخة العربية", "Editing the English version")}</span></div>}
 
-      {tab === "home" && <div className="dashboard-grid"><article className="welcome"><div><small>{tr("مرحبًا محمد", "Welcome, Mohammed")}</small><h2>{tr("كل محتوى موقعك قابل للتعديل", "Your complete portfolio editor")}</h2><p>{tr("عدّل النصوص، وأضف أو احذف الخبرات والمشاريع والمهارات ووسائل التواصل.", "Edit every field and add, remove, or reorder experience, projects, skills, education, and contact links.")}</p><button onClick={() => setTab("general")}>{tr("ابدأ التعديل", "Start editing")}</button></div><strong>MS</strong></article><Quick title={tr("الخبرات", "Experience entries")} value={String(t.experiences.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("experience")}/><Quick title={tr("المشاريع", "Projects")} value={String(t.projects.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("project")}/><Quick title={tr("وسائل التواصل", "Contact methods")} value={String(contacts.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("contact")}/></div>}
+      {tab === "home" && <div className="dashboard-grid"><article className="welcome"><div><small>{tr("مرحبًا محمد", "Welcome, Mohammed")}</small><h2>{tr("كل محتوى موقعك قابل للتعديل", "Your complete portfolio editor")}</h2><p>{tr("عدّل النصوص، وأضف أو احذف الخبرات والمشاريع والمهارات ووسائل التواصل.", "Edit every field and add, remove, or reorder experience, projects, skills, education, and contact links.")}</p><button onClick={() => setTab("general")}>{tr("ابدأ التعديل", "Start editing")}</button></div><strong>MS</strong></article><Quick title={tr(`إجمالي الزيارات • اليوم ${visits.today}`, `Total visits • Today ${visits.today}`)} value={visits.total.toLocaleString(lang === "ar" ? "ar-SA" : "en-US")} action={tr("تحديث", "Refresh")} onClick={loadVisits}/><Quick title={tr("الخبرات", "Experience entries")} value={String(t.experiences.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("experience")}/><Quick title={tr("المشاريع", "Projects")} value={String(t.projects.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("project")}/><Quick title={tr("وسائل التواصل", "Contact methods")} value={String(contacts.length)} action={tr("إدارة", "Manage")} onClick={() => setTab("contact")}/><section className="analytics-breakdown"><header><div><h2>{tr("تفاصيل الزوار", "Visitor insights")}</h2><p>{tr("بيانات مجمعة بدون تخزين عنوان IP أو معلومات تعريف شخصية.", "Aggregated statistics without storing IP addresses or personal identifiers.")}</p></div><button onClick={loadVisits}>{tr("تحديث البيانات", "Refresh data")}</button></header><div><AnalyticsCard title={tr("الأجهزة", "Devices")} items={visits.breakdown.device} lang={lang}/><AnalyticsCard title={tr("أنظمة التشغيل", "Operating systems")} items={visits.breakdown.os} lang={lang}/><AnalyticsCard title={tr("المتصفحات", "Browsers")} items={visits.breakdown.browser} lang={lang}/><AnalyticsCard title={tr("الدول", "Countries")} items={visits.breakdown.country} lang={lang} countries/><AnalyticsCard title={tr("مصادر الزيارة", "Traffic sources")} items={visits.breakdown.source} lang={lang}/></div></section></div>}
 
       {tab === "general" && <>
         <Card title={tr("القسم الرئيسي", "Hero section")} text={tr("كل النصوص والأزرار التي تظهر في بداية الموقع.", "Every heading, button, and detail shown at the top of the website.")}><div className="form-grid"><Field label={tr("السطر التعريفي", "Eyebrow")} wide><input value={t.kicker} onChange={e => edit("kicker", e.target.value)}/></Field><Field label={tr("العنوان الرئيسي", "Main title")} wide><textarea rows={3} value={t.title} onChange={e => edit("title", e.target.value)}/></Field><Field label={tr("المقدمة", "Introduction")} wide><textarea rows={4} value={t.intro} onChange={e => edit("intro", e.target.value)}/></Field><Field label={tr("زر التواصل", "Contact button")}><input value={t.cta} onChange={e => edit("cta", e.target.value)}/></Field><Field label={tr("زر السيرة", "CV button")}><input value={t.cv} onChange={e => edit("cv", e.target.value)}/></Field><Field label={tr("الموقع", "Location")}><input value={t.loc} onChange={e => edit("loc", e.target.value)}/></Field><Field label={tr("حالة التوفر", "Availability text")}><input value={t.availability} onChange={e => edit("availability", e.target.value)}/></Field></div></Card>
@@ -151,4 +168,12 @@ export default function AdminEditor() {
 function Card({ title, text, children }: { title: string; text: string; children: React.ReactNode }) { return <article className="editor-card"><header><h2>{title}</h2><p>{text}</p></header>{children}</article>; }
 function Field({ label, wide, children }: { label: string; wide?: boolean; children: React.ReactNode }) { return <label className={wide ? "field wide" : "field"}><span>{label}</span>{children}</label>; }
 function Quick({ title, value, action, onClick }: { title: string; value: string; action: string; onClick: () => void }) { return <article className="quick"><span>{title}</span><strong>{value}</strong><button onClick={onClick}>{action}</button></article>; }
+function AnalyticsCard({ title, items, lang, countries = false }: { title: string; items: VisitItem[]; lang: Lang; countries?: boolean }) {
+  const label = (value: string) => {
+    if (!countries || value === "Unknown") return value;
+    try { return new Intl.DisplayNames([lang === "ar" ? "ar" : "en"], { type: "region" }).of(value) || value; } catch { return value; }
+  };
+  const max = Math.max(1, ...items.map(item => item.visits));
+  return <article className="analytics-card"><h3>{title}</h3>{items.length ? <ul>{items.map(item => <li key={item.value}><div><span>{label(item.value)}</span><b>{item.visits.toLocaleString(lang === "ar" ? "ar-SA" : "en-US")}</b></div><i><em style={{ width: `${Math.max(5, item.visits / max * 100)}%` }}/></i></li>)}</ul> : <p>{lang === "ar" ? "لا توجد بيانات بعد" : "No data yet"}</p>}</article>;
+}
 function ItemActions({ isAr, index, count, onUp, onDown, onRemove }: { isAr: boolean; index: number; count: number; onUp: () => void; onDown: () => void; onRemove: () => void }) { return <div className="item-actions"><button onClick={onUp} disabled={index === 0} title={isAr ? "تحريك لأعلى" : "Move up"}>↑</button><button onClick={onDown} disabled={index === count - 1} title={isAr ? "تحريك لأسفل" : "Move down"}>↓</button><button className="danger" onClick={onRemove} title={isAr ? "حذف" : "Delete"}>×</button></div>; }
